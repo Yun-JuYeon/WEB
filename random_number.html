@@ -1,0 +1,109 @@
+<!Doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Random Number Game</title>
+		<style>
+		  body {
+			width: 50%;
+			max-width: 800px;
+			min-width: 480px;
+			margin: 0 auto;
+		  }
+
+		  .lastResult {
+			color: white;
+			padding: 3px;
+		  }
+		</style>
+	</head>
+	<body>
+		<h1> 랜덤 숫자 게임! </h1>
+		<p>1부터 100 사이 랜덤으로 주어지는 숫자를 아래의 칸에 입력하여 맞추시오.
+		단, 기회는 10번입니다. 만약 주어진 숫자보다 높게 입력했다면 down, 낮게 입력했다면 up이라고 나옵니다.</p>
+		
+		<div class="box">
+			<label for="number">입력 숫자 : </label>
+			<input type="text" id="number" class="number">
+			<input type="submit" value="제출" class="submitnb">
+		</div>
+		<div class="resultParas">
+			<p class="guesses"></p>
+			<p class="lastResult"></p>
+			<p class="UpDown"></p>
+		</div>
+		<script>
+			var randomNumber = Math.floor(Math.random() * 100) + 1;
+
+			var guesses= document.querySelector('.guesses');
+			var lastResult = document.querySelector('.lastResult');
+			var UpDown = document.querySelector('.UpDown');
+
+			var submitnb = document.querySelector('.submitnb');
+			var number = document.querySelector('.number');
+
+			var guessCount = 1;
+			var resetButton;
+			
+			function check() {
+			  var userGuess = Number(number.value);
+			  if (guessCount == 1) {
+				guesses.textContent = '이전 숫자 : ';
+			  }
+			  guesses.textContent += userGuess + ' ';
+
+			  if (userGuess == randomNumber) {
+				lastResult.textContent = '정답입니다! 축하합니다~';
+				lastResult.style.backgroundColor = 'green';
+				UpDown.textContent = '';
+				setGameOver();
+			  } else if (guessCount == 10) {
+				lastResult.textContent = '!!!GAME OVER!!!';
+				setGameOver();
+			  } else {
+				lastResult.textContent = '틀렸습니다!';
+				lastResult.style.backgroundColor = 'red';
+				if(userGuess < randomNumber) {
+				  UpDown.textContent = 'UP!';
+				} else if(userGuess > randomNumber) {
+				  UpDown.textContent = 'DOWN!';
+				}
+			  }
+
+			  guessCount++;
+			  number.value = '';
+			  number.focus();
+			}
+			submitnb.addEventListener('click', check);
+			
+			function setGameOver() {
+			  number.disabled = true;
+			  submitnb.disabled = true;
+			  resetButton = document.createElement('button');
+			  resetButton.textContent = 'Start new game';
+			  document.body.appendChild(resetButton);
+			  resetButton.addEventListener('click', resetGame);
+			}
+			
+			function resetGame() {
+			  guessCount = 1;
+
+			  var resetParas = document.querySelectorAll('.resultParas p');
+			  for (var i = 0 ; i < resetParas.length ; i++) {
+				resetParas[i].textContent = '';
+			  }
+
+			  resetButton.parentNode.removeChild(resetButton);
+
+			  number.disabled = false;
+			  submitnb.disabled = false;
+			  number.value = '';
+			  number.focus();
+
+			  lastResult.style.backgroundColor = 'white';
+
+			  randomNumber = Math.floor(Math.random() * 100) + 1;
+			}
+		</script>
+	</body>
+</html>
